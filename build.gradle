@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: "groovy"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile "junit:junit:4.11"
+    testCompile "org.testng:testng:6.0.1"
+    testCompile "org.mockito:mockito-all:1.9.5"
+    testCompile "org.hamcrest:hamcrest-all:1.3"
+
+    // spock
+    groovy "org.codehaus.groovy:groovy-all:1.8.6"
+    testCompile "org.spockframework:spock-core:0.6-groovy-1.8"
+
+    compile "commons-lang:commons-lang:2.6"
+
+    compile "org.apache.tapestry:tapestry-ioc:5.3.7"
+    compile "org.apache.tapestry:tapestry-hibernate-core:5.3.7"
+
+}
