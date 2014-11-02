@@ -1,30 +1,61 @@
 package com.fa.taxes.domain;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.regex.Pattern;
 
 public class Item {
 
     private String name;
     private BigDecimal price;
 
+    private static final BigDecimal TAXE = new BigDecimal("0.10");
+    private static final BigDecimal IMPORT_TAXE = new BigDecimal("0.05");
+    private static final BigDecimal ROUND = new BigDecimal("0.05");
+
+    private static final Pattern NO_TAX_ITEM_PATTERN = Pattern.compile("livre.*|.*chocolat.*|boîte de pilules contre la migraine");
+    private static final Pattern IMPORT_ITEM_PATTERN = Pattern.compile(".*importé[se]{0,1}");
+
     Item(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
     }
 
+    /**
+     * Calculate Item VAT
+     *
+     * @return Item VAT
+     */
     BigDecimal getVATPrice() {
-        if (price.equals(new BigDecimal("12.49"))) return price;
-        if (price.equals(new BigDecimal("0.85"))) return price;
-        if (price.equals(new BigDecimal("14.99"))) return new BigDecimal("16.49");
+        BigDecimal VATPrice = new BigDecimal(price.toString());
 
-        if (price.equals(new BigDecimal("10.00"))) return new BigDecimal("10.50");
-        if (price.equals(new BigDecimal("47.50"))) return new BigDecimal("54.65");
+        //If item is concerned by VAT, it's add to VAT price
+        if (!NO_TAX_ITEM_PATTERN.matcher(name).matches())
+            VATPrice = VATPrice.add(getVAT(TAXE));
 
-        if (price.equals(new BigDecimal("27.99"))) return new BigDecimal("32.19");
-        if (price.equals(new BigDecimal("18.99"))) return new BigDecimal("20.89");
-        if (price.equals(new BigDecimal("9.75"))) return new BigDecimal("9.75");
-        if (price.equals(new BigDecimal("11.25"))) return new BigDecimal("11.85");
+        //If item is concerned by import VAT, it's add to VAT price
+        if (IMPORT_ITEM_PATTERN.matcher(name).matches())
+            VATPrice = VATPrice.add(getVAT(IMPORT_TAXE));
 
-        throw new IllegalArgumentException();
+        return VATPrice;
+    }
+
+    /**
+     * Rounding VAT at 5 cents higher
+     * 0.99 => 1.00
+     * 1.00 => 1.00
+     * 1.01 => 1.05
+     * 1.02 => 1.05
+     *
+     * @param rate VAT calculate
+     * @return VAT rounded
+     */
+    private BigDecimal getVAT(BigDecimal rate) {
+        BigDecimal vat = price.multiply(rate).setScale(2, RoundingMode.CEILING);
+        BigDecimal reminder = vat.remainder(ROUND);
+        if (reminder.equals(new BigDecimal("0.00")))
+            return vat;
+
+        return vat.add(ROUND.subtract(reminder));
     }
 }
