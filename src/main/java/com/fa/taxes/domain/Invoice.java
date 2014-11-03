@@ -1,19 +1,30 @@
 package com.fa.taxes.domain;
 
-import java.math.BigDecimal;
+import org.apache.tapestry5.func.F;
 
-/**
- * //TODO : document me!
- */
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.fa.taxes.domain.Product.toTotalPriceWithVAT;
+import static com.fa.taxes.domain.Product.toTotalVAT;
+import static java.math.BigDecimal.ZERO;
+
 public class Invoice {
 
-    BigDecimal totalVAT = new BigDecimal(0);
-    BigDecimal totalAmountWithVAT = new BigDecimal(0);
+    List<Product> products = new ArrayList<>();
 
-    public void addItem(BigDecimal price, BigDecimal priceWithVAT) {
-        totalAmountWithVAT = totalAmountWithVAT.add(priceWithVAT);
+    public Invoice add(Product product) {
+        products.add(product);
+        return this;
+    }
 
-        totalVAT = totalVAT.add((priceWithVAT.subtract(price)));
+    public BigDecimal getTotalVAT() {
+        return F.flow(products).reduce(toTotalVAT, ZERO);
+    }
+
+    public BigDecimal getTotalAmountWithVAT() {
+        return F.flow(products).reduce(toTotalPriceWithVAT, ZERO);
     }
 
 }

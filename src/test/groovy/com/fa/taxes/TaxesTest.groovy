@@ -1,9 +1,16 @@
 package com.fa.taxes
 
 import com.fa.taxes.domain.Invoice
-import com.fa.taxes.domain.Item
+import com.fa.taxes.domain.Product
 import spock.lang.Shared
 import spock.lang.Specification
+
+import static com.fa.taxes.domain.Product.IMPORTED
+import static com.fa.taxes.domain.Product.NOT_IMPORTED
+import static com.fa.taxes.domain.ProductType.BOOK
+import static com.fa.taxes.domain.ProductType.DRUG
+import static com.fa.taxes.domain.ProductType.FOOD
+import static com.fa.taxes.domain.ProductType.OTHER
 
 class TaxesTest extends Specification {
 
@@ -11,17 +18,17 @@ class TaxesTest extends Specification {
 
     def "Use case 1"() {
         when:
-        def iItem = new Item(name, price)
+        def product = new Product(name, productType, imported, price)
 
         then:
-        iItem.VATPrice == priceWithVAT
-        invoice1.addItem(price, priceWithVAT)
+        product.priceWithVAT == priceWithVAT
+        invoice1.add(product)
 
         where:
-        quantity | name                |  price | priceWithVAT
-        1        | "livre"             |  12.49 |        12.49
-        1        | "CD musical"        |  14.99 |        16.49
-        1        | "barre de chocolat" |   0.85 |         0.85
+        quantity | name                | productType | imported     | price | priceWithVAT
+        1        | "livre"             | BOOK        | NOT_IMPORTED | 12.49 |        12.49
+        1        | "CD musical"        | OTHER       | NOT_IMPORTED | 14.99 |        16.49
+        1        | "barre de chocolat" | FOOD        | NOT_IMPORTED |  0.85 |         0.85
     }
 
     def "Use case 1 sums"() {
@@ -35,16 +42,16 @@ class TaxesTest extends Specification {
 
     def "Use case 2"() {
         when:
-        def iItem = new Item(name, price)
+        def product = new Product(name, productType, imported, price)
 
         then:
-        iItem.VATPrice == priceWithVAT
-        invoice2.addItem(price, priceWithVAT)
+        product.priceWithVAT == priceWithVAT
+        invoice2.add(product)
 
         where:
-        quantity | name                           |  price | priceWithVAT
-        1        | "boite de chocolats importée"  |  10.00 |        10.50
-        1        | "flacon de parfum importé"     |  47.50 |        54.65
+        quantity | name                           | productType | imported  |  price | priceWithVAT
+        1        | "boite de chocolats importée"  | FOOD        | IMPORTED  |  10.00 |        10.50
+        1        | "flacon de parfum importé"     | OTHER       | IMPORTED  |  47.50 |        54.65
     }
 
     def "Use case 2 sums"() {
@@ -58,18 +65,18 @@ class TaxesTest extends Specification {
 
     def "Use case 3"() {
         when:
-        def iItem = new Item(name, price)
+        def product = new Product(name, productType, imported, price)
 
         then:
-        iItem.VATPrice == priceWithVAT
-        invoice3.addItem(price, priceWithVAT)
+        product.priceWithVAT == priceWithVAT
+        invoice3.add(product)
 
         where:
-        quantity | name                                  |  price | priceWithVAT
-        1        | "flacon de parfum importé"            |  27.99 |        32.19
-        1        | "flacon de parfum"                    |  18.99 |        20.89
-        1        | "boîte de pilules contre la migraine" |  9.75  |         9.75
-        1        | "boîte de chocolats importés"         |  11.25 |        11.85
+        quantity | name                                  | productType | imported     |  price | priceWithVAT
+        1        | "flacon de parfum importé"            | OTHER       | IMPORTED     |  27.99 |        32.19
+        1        | "flacon de parfum"                    | OTHER       | NOT_IMPORTED |  18.99 |        20.89
+        1        | "boîte de pilules contre la migraine" | DRUG        | NOT_IMPORTED |  9.75  |         9.75
+        1        | "boîte de chocolats importés"         | FOOD        | IMPORTED     |  11.25 |        11.85
     }
 
     def "Use case 3 sums"() {
