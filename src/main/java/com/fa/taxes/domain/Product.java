@@ -33,6 +33,6 @@ public class Product {
 
     @Override
     public String toString() {
-        return "1 " + name + " : " + getPriceWithVAT() + "\n";
+        return "1 " + name + " : " + getPriceWithVAT();
     }
 }

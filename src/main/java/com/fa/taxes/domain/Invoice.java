@@ -25,7 +25,7 @@ public class Invoice {
     }
 
     public String toString() {
-        return products.stream().map(Product::toString).collect(joining())
+        return products.stream().map(Product::toString).collect(joining("\n"))
                 + "Montant des taxes : " + getTotalVAT() + "\n"
                 + "Total : " + getTotalAmountWithVAT() + "\n";
     }

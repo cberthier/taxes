@@ -16,8 +16,4 @@ dependencies {
     testCompile "org.spockframework:spock-core:0.6-groovy-1.8"
 
     compile "commons-lang:commons-lang:2.6"
-
-    compile "org.apache.tapestry:tapestry-ioc:5.3.7"
-    compile "org.apache.tapestry:tapestry-hibernate-core:5.3.7"
-
 }
