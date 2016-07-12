@@ -3,13 +3,15 @@ package com.fa.taxes.domain;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 public class Invoice {
 
-    List<Product> products = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
     public Invoice add(Product product) {
         products.add(requireNonNull(product));
@@ -25,8 +27,10 @@ public class Invoice {
     }
 
     public String toString() {
-        return products.stream().map(Product::toString).collect(joining("\n"))
-                + "Montant des taxes : " + getTotalVAT() + "\n"
-                + "Total : " + getTotalAmountWithVAT() + "\n";
+        return new StringJoiner("\n")
+                .add(products.stream().map(Product::toString).collect(joining("\n")))
+                .add("Montant des taxes : " + getTotalVAT())
+                .add("Total : " + getTotalAmountWithVAT())
+                .toString();
     }
 }

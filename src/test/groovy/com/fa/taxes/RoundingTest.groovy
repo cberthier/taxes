@@ -2,7 +2,7 @@ package com.fa.taxes
 
 import spock.lang.Specification
 
-import static com.fa.taxes.domain.Product.round
+import static com.fa.taxes.domain.Taxe.round
 
 class RoundingTest extends Specification {
 
