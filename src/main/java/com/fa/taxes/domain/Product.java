@@ -1,7 +1,9 @@
 package com.fa.taxes.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
+import static java.math.BigDecimal.ZERO;
 import static java.util.Objects.requireNonNull;
 
 
@@ -17,6 +19,7 @@ public class Product {
         this.productType = requireNonNull(productType);
         this.origin = requireNonNull(origin);
         this.price = requireNonNull(price);
+        assert price.compareTo(ZERO) >= 0;
     }
 
     public String getName() {
@@ -33,6 +36,6 @@ public class Product {
 
     @Override
     public String toString() {
-        return "1 " + name + " : " + getPriceWithVAT();
+        return "1 " + getName() + " : " + getPriceWithVAT();
     }
 }
